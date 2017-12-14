@@ -1,5 +1,5 @@
 {
-  "doorLocks": [
+  "doorlocks": [
     {
       "relayPin": 18,
       "doorlockName": "Basement",
