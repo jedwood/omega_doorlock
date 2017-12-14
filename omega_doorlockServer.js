@@ -1,4 +1,4 @@
-var Router = require('node-simple-router');
+var Router = require('./node-simple-router');
 var router = Router();
 
 var omegaDoorlock = require('./omega_doorlock');
