@@ -1,0 +1,29 @@
+{
+  "name": "omega_doorlock",
+  "version": "0.1.0",
+  "description": "A wifi garage remote control for a DIY door lock.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jedwood/omega_doorlock.git"
+  },
+  "keywords": [
+    "onion",
+    "omega",
+    "GPIO"
+  ],
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "chai": "*",
+    "mock-fs": "*"
+  },
+  "author": "Jed Wood",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": ""
+}

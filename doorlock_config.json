@@ -1,0 +1,10 @@
+{
+  "doorLocks": [
+    {
+      "relayPin": 18,
+      "doorlockName": "Basement",
+      "sensorPin": 26
+    }
+  ],
+  "webhook": null
+}
