@@ -1,34 +1,25 @@
-var Router = require('./node-simple-router');
-var router = Router();
+var express = require('express');
+var app = express();
 
 var omegaDoorlock = require('./omega_doorlock');
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
-router.options('*', function(req,res) {
-  var headers = {};
-  headers["Access-Control-Allow-Origin"] = "*";
-  headers["Access-Control-Allow-Headers"] = "X-Requested-With, Access-Control-Allow-Origin, X-HTTP-Method-Override, Content-Type, Authorization, Accept";
-  // respond to the request
-  res.writeHead(200, headers);
-  res.end();
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
-router.get('/', function (req, res) {
+app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-router.get('/getDoorlockState/:doorIndex', function (req, res) {
+app.get('/getDoorlockState/:doorIndex', function (req, res) {
 
   var state = omegaDoorlock.getDoorlockState(req.params.doorIndex);
   res.send(state);
 });
 
-router.post('/doorlockCommand/:doorIndex', function (req, res) {
+app.post('/doorlockCommand/:doorIndex', function (req, res) {
   //req.params.doorIndex
   console.log("Received request to change the state of the doorlock door: " + req.params.doorIndex);
 
@@ -38,7 +29,7 @@ router.post('/doorlockCommand/:doorIndex', function (req, res) {
   res.send("Done!");
 });
 
-router.get('/getAllDetails', function (req, res)
+app.get('/getAllDetails', function (req, res)
 {
   var obj = omegaDoorlock.getAllDoorlockStates()
 
@@ -47,8 +38,7 @@ router.get('/getAllDetails', function (req, res)
 });
 
 
-var server = http.createServer(router);
-server.listen(3000, function(){
+app.listen(3000, function(){
   console.log('omega_doorlock listening on port 3000!');
   omegaDoorlock.init();
 });
