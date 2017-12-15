@@ -1,108 +1,130 @@
 # omega_doorlock
 
-A node js application that can control your garage door(s).
+This borrows *heavily* from the `omega_garage` project, which is node.js application that can control your garage door(s).
 
-This app uses a configuration file to define pins, the name of the garage door that the pin corresponds with, and a sensor pin for the magnetic proximity sensor.
+This app uses a configuration file to define pins, the name of the door lock that the pin corresponds with, and a sensor pin for the magnetic proximity sensor.
 
-Mainly designed for use with two wire garage door openers. I have found that some Chamberlain 2 wire systems do not work with just a relay. The systems have something called Security+ 2.0 which uses a serial wire protocol. I have yet had time to decrypt this so be aware this doesn't work with every 2 wire system.
+This can be used with solenoids or other electromagnetic systems.
 
-# To Install on Omegas with only 16mb of Flash storage:
+# Initial installation steps:
 
-1. Install nodejs
+1. Make sure package manager is up-to-date
 
   ```opkg update```
+
+2. Install the `onoff` Gpio library:
+
+  ```opkg install onoff-node```
+
+3. Install nodejs
 
   ```opkg install nodejs```
 
-2. Install git and git http
+4. Install git and required packages
 
-  ```opkg update```
+  ```opkg install git git-http ca-bundle```
 
-  ```opkg install git git-http```
 
-3.Manuallly Clone the omega garage repo into /tmp/omega_garage
+# To Install on Omegas with only 16mb of Flash storage:
 
-  ```git clone https://github.com/JimJamUrCode/omega_garage.git /tmp/omega_garage```
+5.Manually Clone the repo into /tmp/omega_doorlock
 
-4. Move the config file to your home directory
+  ```git clone https://github.com/jedwood/omega_doorlock.git /tmp/omega_doorlock```
 
-  ```mv /tmp/omega_garage/config.json /root/config.json```
+6. Move the config file to your home directory
 
-5. Modify the config.json file with the appropriate credentials
+  ```mv /tmp/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
 
-6. Move the 'startOmegaGarage' file to the '/etc/init.d' directory and grant it rights to execute
+7. Modify the doorlock_config.json file with the appropriate credentials
 
-  ```mv /tmp/omega_garage/startOmegaGarage /etc/init.d/```
+8. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
 
-  ```chmod +x /etc/init.d/startOmegaGarage```
+  ```mv /tmp/omega_doorlock/startOmegaDoorlock /etc/init.d/```
 
-7.Enable the new init.d script to make the service run at boot. The startOmegaGarage script will load the omega_garage repo into RAM and start the server.
+  ```chmod +x /etc/init.d/startOmegaDoorlock```
 
-  ```/etc/init.d/startOmegaGarage enable```
+9.Enable the new init.d script to make the service run at boot. The startOmegaDoorlock script will load the omega_doorlock repo into RAM and start the server.
 
-8. reboot the onion omega to make sure that the startOmegaGarage script is executed upon reboot.
+  ```/etc/init.d/startOmegaDoorlock enable```
+
+10. reboot the onion omega to make sure that the startOmegaDoorlock script is executed upon reboot.
 
 ```reboot```
 
 
 # To Install on Omegas with more than 16mb of Flash storage:
 
-1. Install nodejs
+5.Manually Clone the repo into your home directory
 
-  ```opkg update```
+  ```git clone https://github.com/jedwood/omega_doorlock.git /root/omega_doorlock```
 
-  ```opkg install nodejs```
+6. Move the config file to your home directory
 
-2. Install git and git http
+  ```mv /tmp/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
 
-  ```opkg update```
+7. Modify the doorlock_config.json file with the appropriate credentials
 
-  ```opkg install git git-http```
+8. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
 
-3.Manuallly Clone the omega garage repo into your home directory
+  ```mv /root/omega_garage/startOmegaDoorlock16mbplus /etc/init.d/```
 
-  ```git clone https://github.com/JimJamUrCode/omega_garage.git /root/omega_garage```
+  ```chmod +x /etc/init.d/startOmegaDoorlock16mbplus```
 
-4. Move the config file to your home directory
+9.Enable the new init.d script to make the service run at boot. The startOmegaDoorlock16mbplus script will start the server.
 
-  ```mv /root/omega_garage/config.json /root/config.json```
+  ```/etc/init.d/startOmegaDoorlock16mbplus enable```
 
-5. Modify the config.json file with the appropriate credentials
-6. Move the 'startOmegaGarage' file to the '/etc/init.d' directory and grant it rights to execute
-
-  ```mv /root/omega_garage/startOmegaGarage16mbplus /etc/init.d/```
-
-  ```chmod +x /etc/init.d/startOmegaGarage16mbplus```
-
-7.Enable the new init.d script to make the service run at boot. The startOmegaGarage16mbplus script will start the server.
-
-  ```/etc/init.d/startOmegaGarage16mbplus enable```
-
-8. reboot the onion omega to make sure that the startOmegaGarage script is executed upon reboot.
+10. reboot the onion omega to make sure that the startOmegaDoorlock16mbplus script is executed upon reboot.
 
 ```reboot```
 
 
-# In either case:
-* There are a few more dependencies now that email notifications are enabled.
-
- * Express js
-
- * emailjs and its dependencies
-
- * You must get a copy of express for node. Follow the instructions in the guide here: https://community.onion.io/topic/855/nodejs-express-http-server/2. I have included a version in the repo that is working for me.
+# A note about Express.js
+* I initially tried to use an old ligther-weight router package, but got tired of fiddling and just fell back on old trusty Express. I have included a version in the repo that is working for me. If you have problems, try following the instructions in the guide here: https://community.onion.io/topic/855/nodejs-express-http-server/2.
 
 # HomeBridge Compatibility
-* I have added homebridge compatibility by using this homebridge plugin:https://www.npmjs.com/package/homebridge-advanced-http-temperature-humidity
-  * The "accessories" section of your homebridge config file would look something like this:
+* For now I'm using just using a garage door plugin that is working great for my actual garage doors: https://github.com/washcroft/homebridge-http-garagedoorcontroller with the "generic API" config option, but *make sure you add this fix*: https://github.com/washcroft/homebridge-http-garagedoorcontroller/pull/9/files.
 
-  "accessories": [
-      {
-        "accessory": "AdvancedHttpTemperatureHumidity",
-        "name": "Temperature and Humidity",
-        "url": "http://192.168.1.45:3000/getWeatherDetails",
-        "disableHumidity": false,
-        "http_method": "GET"
-      }
-    ],
+Here's what my config looks like:
 
+```{
+"accessory": "HttpGarageDoorController",
+"name": "Sliding Door",
+"lightName": false,
+"doorOperationSeconds": 2,
+"httpHost": "YOUR-LOCAL-IPADDRESS-HERE",
+"httpPort": 3000,
+"httpSsl": false,
+"httpStatusPollMilliseconds": 4000,
+"httpRequestTimeoutMilliseconds": 10000,
+"httpHeaderName": "X-API-Key",
+"httpHeaderValue": "MyAPIKey",
+"oauthAuthentication": false,
+"oauthSignatureMethod": "HMAC-SHA256",
+"oauthConsumerKey": "MyOAuthConsumerKey",
+"oauthConsumerSecret": "MyOAuthConsumerSecret",
+"oauthToken": "MyOAuthToken",
+"oauthTokenSecret": "MyOAuthTokenSecret",
+"apiConfig":
+{
+"apiType": "Generic",
+"doorOpenMethod": "POST",
+"doorOpenUrl": "/doorlockCommand/0",
+"doorOpenSuccessContent": "Done!",
+"doorCloseMethod": "POST",
+"doorCloseUrl": "/doorlockCommand/0",
+"doorCloseSuccessContent": "Done!",
+"doorStateMethod": "GET",
+"doorStateUrl":"/getDoorlockState/0",
+"lightOnMethod": "GET",
+"lightOnUrl":"/controller/light/on",
+"lightOnSuccessContent": "OK",
+"lightOffMethod": "GET",
+"lightOffUrl":"/controller/light/off",
+"lightOffSuccessContent": "OK",
+"lightStateMethod": "GET",
+"lightStateUrl":"/controller/light/status"
+}
+}```
+
+None of the light stuff is used, but when I initially tried to pull it out it threw errors. Someday I might find (or create) a more specific plugin.
