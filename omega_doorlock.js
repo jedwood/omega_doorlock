@@ -37,7 +37,7 @@ omegaDoorlock.prototype.init = function()
   }
 };
 
-omegaDoorlock.prototype.getLockState = function(doorlockIndex)
+omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
 {
   try
   {
