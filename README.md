@@ -83,11 +83,12 @@ This can be used with solenoids or other electromagnetic systems.
 * I initially tried to use an old ligther-weight router package, but got tired of fiddling and just fell back on old trusty Express. I have included a version in the repo that is working for me. If you have problems, try following the instructions in the guide here: https://community.onion.io/topic/855/nodejs-express-http-server/2.
 
 # HomeBridge Compatibility
-* For now I'm using just using a garage door plugin that is working great for my actual garage doors: https://github.com/washcroft/homebridge-http-garagedoorcontroller with the "generic API" config option, but *make sure you add this fix*: https://github.com/washcroft/homebridge-http-garagedoorcontroller/pull/9/files.
+* For now I'm using just using a garage door plugin that is working great for my actual garage doors: https://github.com/washcroft/homebridge-http-garagedoorcontroller with the "generic API" config option.
 
 Here's what my config looks like:
 
-```{
+```
+{
 "accessory": "HttpGarageDoorController",
 "name": "Sliding Door",
 "lightName": false,
@@ -125,6 +126,7 @@ Here's what my config looks like:
 "lightStateMethod": "GET",
 "lightStateUrl":"/controller/light/status"
 }
-}```
+}
+```
 
 None of the light stuff is used, but when I initially tried to pull it out it threw errors. Someday I might find (or create) a more specific plugin.
