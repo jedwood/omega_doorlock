@@ -25,7 +25,7 @@ app.post('/', function (req, res) {
   omegaDoorlock.changeDoorlockState(parseInt(req.body.lockid));
 
   res.setHeader('Cache-Control', 'no-cache');
-  res.send("Done!");
+  res.send({state:"locked", battery:100});
 });
 
 
