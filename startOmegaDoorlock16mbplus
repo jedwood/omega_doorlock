@@ -7,7 +7,7 @@ STOP=1
 
 start() {
         echo start >> /tmp/output.txt
-	node /root/omega_garage/omega_doorlockServer.js
+	node /root/omega_doorlock/omega_doorlockServer.js
 }
 
 stop() {

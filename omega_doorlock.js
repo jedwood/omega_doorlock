@@ -23,9 +23,8 @@ omegaDoorlock.prototype.init = function()
     for(var i = 0; i < doorlocksLength; i++)
     {
       console.log("Creating servo for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].servoPin);
-      exec('fast-gpio set-output ' + config.doorlocks[i].servoPin, function(){
-        exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
-      });
+      exec('fast-gpio set-output ' + config.doorlocks[i].servoPin);
+      exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
 
       console.log("Creating sensor input for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].sensorPin);
       exec('fast-gpio set-input ' + config.doorlocks[i].sensorPin);

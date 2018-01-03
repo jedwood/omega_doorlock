@@ -23,54 +23,54 @@ I originally created this to be used with a solenoid, but switched to a servo.
 
 # To Install on Omegas with only 16mb of Flash storage:
 
-5.Manually Clone the repo into /tmp/omega_doorlock
+4. Manually Clone the repo into /tmp/omega_doorlock
 
   ```git clone https://github.com/jedwood/omega_doorlock.git /tmp/omega_doorlock```
 
-6. Move the config file to your home directory
+5. Move the config file to your home directory
 
   ```mv /tmp/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
 
-7. Modify the doorlock_config.json file with the appropriate credentials
+6. Modify the doorlock_config.json file with the appropriate credentials
 
-8. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
+7. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
 
   ```mv /tmp/omega_doorlock/startOmegaDoorlock /etc/init.d/```
 
   ```chmod +x /etc/init.d/startOmegaDoorlock```
 
-9.Enable the new init.d script to make the service run at boot. The startOmegaDoorlock script will load the omega_doorlock repo into RAM and start the server.
+8. Enable the new init.d script to make the service run at boot. The startOmegaDoorlock script will load the omega_doorlock repo into RAM and start the server.
 
   ```/etc/init.d/startOmegaDoorlock enable```
 
-10. reboot the onion omega to make sure that the startOmegaDoorlock script is executed upon reboot.
+9. reboot the onion omega to make sure that the startOmegaDoorlock script is executed upon reboot.
 
 ```reboot```
 
 
 # To Install on Omegas with more than 16mb of Flash storage:
 
-5.Manually Clone the repo into your home directory
+4. Manually Clone the repo into your home directory
 
   ```git clone https://github.com/jedwood/omega_doorlock.git /root/omega_doorlock```
 
-6. Move the config file to your home directory
+5. Move the config file to your home directory
 
   ```mv /root/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
 
-7. Modify the doorlock_config.json file with the appropriate credentials
+6. Modify the doorlock_config.json file with the appropriate credentials
 
-8. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
+7. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
 
   ```mv /root/omega_doorlock/startOmegaDoorlock16mbplus /etc/init.d/```
 
   ```chmod +x /etc/init.d/startOmegaDoorlock16mbplus```
 
-9.Enable the new init.d script to make the service run at boot. The startOmegaDoorlock16mbplus script will start the server.
+8.Enable the new init.d script to make the service run at boot. The startOmegaDoorlock16mbplus script will start the server.
 
   ```/etc/init.d/startOmegaDoorlock16mbplus enable```
 
-10. reboot the onion omega to make sure that the startOmegaDoorlock16mbplus script is executed upon reboot.
+9. reboot the onion omega to make sure that the startOmegaDoorlock16mbplus script is executed upon reboot.
 
 ```reboot```
 
@@ -79,4 +79,17 @@ I originally created this to be used with a solenoid, but switched to a servo.
 * I initially tried to use an old ligther-weight router package, but got tired of fiddling and just fell back on old trusty Express. I have included a version in the repo that is working for me. If you have problems, try following the instructions in the guide here: https://community.onion.io/topic/855/nodejs-express-http-server/2.
 
 # HomeBridge Compatibility
-* update coming soon...
+This one worked for me: https://github.com/AchimPieters/Apple-Homebridge-Door-Lock . Here's what my config looks like:
+
+```
+"accessories":[
+  {
+    "accessory": "HttpLock",
+    "name": "Basement Door",
+    "url": "http://YOUR_LOCAL_OMEGA_IP_HERE:3000/",
+    "lock-id": "0",
+    "username": "Your_Username",
+    "password": "Your_Password"
+    } ...
+```
+
