@@ -84,7 +84,7 @@ This one worked for me: https://github.com/AchimPieters/Apple-Homebridge-Door-Lo
 ```
 "accessories":[
   {
-    "accessory": "HttpLock",
+    "accessory": "HTTPLock",
     "name": "Basement Door",
     "url": "http://YOUR_LOCAL_OMEGA_IP_HERE:3000/",
     "lock-id": "0",
