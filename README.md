@@ -87,7 +87,8 @@ This can be used with solenoids or other electromagnetic systems.
 
 Here's what my config looks like:
 
-```{
+```
+{
 "accessory": "HttpGarageDoorController",
 "name": "Sliding Door",
 "lightName": false,
@@ -125,6 +126,7 @@ Here's what my config looks like:
 "lightStateMethod": "GET",
 "lightStateUrl":"/controller/light/status"
 }
-}```
+}
+```
 
 None of the light stuff is used, but when I initially tried to pull it out it threw errors. Someday I might find (or create) a more specific plugin.
