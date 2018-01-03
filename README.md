@@ -4,7 +4,7 @@ This was inspired heavily by the `omega_garage` project, which is a node.js appl
 
 This app uses a configuration file to define pins, the name of the door lock that the pin corresponds with, and a sensor pin for the magnetic proximity sensor.
 
-This can be used with solenoids or other electromagnetic systems.
+I originally created this to be used with a solenoid, but switched to a servo.
 
 # Initial installation steps:
 
@@ -12,15 +12,11 @@ This can be used with solenoids or other electromagnetic systems.
 
   ```opkg update```
 
-2. Install the `onoff` Gpio library:
-
-  ```opkg install onoff-node```
-
-3. Install nodejs
+2. Install nodejs
 
   ```opkg install nodejs```
 
-4. Install git and required packages
+3. Install git and required packages
 
   ```opkg install git git-http ca-bundle```
 
@@ -60,13 +56,13 @@ This can be used with solenoids or other electromagnetic systems.
 
 6. Move the config file to your home directory
 
-  ```mv /tmp/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
+  ```mv /root/omega_doorlock/doorlock_config.json /root/doorlock_config.json```
 
 7. Modify the doorlock_config.json file with the appropriate credentials
 
 8. Move the 'startOmegaDoorlock' file to the '/etc/init.d' directory and grant it rights to execute
 
-  ```mv /root/omega_garage/startOmegaDoorlock16mbplus /etc/init.d/```
+  ```mv /root/omega_doorlock/startOmegaDoorlock16mbplus /etc/init.d/```
 
   ```chmod +x /etc/init.d/startOmegaDoorlock16mbplus```
 

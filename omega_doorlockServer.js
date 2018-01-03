@@ -10,31 +10,17 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  var state = omegaDoorlock.getDoorlockState(req.query.lockid);
+  res.send({state:state, battery:100});
 });
 
-app.get('/getDoorlockState/:doorIndex', function (req, res) {
+app.post('/', function (req, res) {
+  console.log("Received request to lock door: " + req.body.lockid);
 
-  var state = omegaDoorlock.getDoorlockState(req.params.doorIndex);
-  res.send(state);
-});
-
-app.post('/doorlockCommand/:doorIndex', function (req, res) {
-  //req.params.doorIndex
-  console.log("Received request to change the state of the doorlock door: " + req.params.doorIndex);
-
-  omegaDoorlock.changeDoorlockState(parseInt(req.params.doorIndex));
+  omegaDoorlock.changeDoorlockState(parseInt(req.body.lockid));
 
   res.setHeader('Cache-Control', 'no-cache');
   res.send("Done!");
-});
-
-app.get('/getAllDetails', function (req, res)
-{
-  var obj = omegaDoorlock.getAllDoorlockStates()
-
-  console.log("Responding to a request for all the details..." + JSON.stringify(obj));
-  res.json(obj);
 });
 
 

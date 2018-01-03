@@ -2,8 +2,10 @@
   "doorlocks": [
     {
       "servoPin": 18,
-      "doorlockName": "Basement",
-      "sensorPin": 0
+      "sensorPin": 0,
+      "dutyCycleOpen": 7,
+      "dutyCycleClose": 10,
+      "doorlockName": "Basement"
     }
   ],
   "webhook": null

@@ -1,4 +1,5 @@
 var method = omegaDoorlock.prototype;
+var exec = require('child_process').exec;
 var https = require('https');
 
 servosStates = [0,0];
@@ -22,10 +23,9 @@ omegaDoorlock.prototype.init = function()
     for(var i = 0; i < doorlocksLength; i++)
     {
       console.log("Creating servo for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].servoPin);
-      exec('fast-gpio set-output ' + config.doorlocks[i].servoPin);
-      exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
-
-      // exec('fast-gpio pwm 18 50 ' + pulse);
+      exec('fast-gpio set-output ' + config.doorlocks[i].servoPin, function(){
+        exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
+      });
 
       console.log("Creating sensor input for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].sensorPin);
       exec('fast-gpio set-input ' + config.doorlocks[i].sensorPin);
@@ -45,9 +45,9 @@ omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
   {
     var strResult = "";
     if(servosStates[doorlockIndex] == 0)
-      strResult = "OPEN";
+      strResult = "locked";
     else
-      strResult = "CLOSED";
+      strResult = "unlocked";
 
     console.log("The " + config.doorlocks[doorlockIndex].doorlockName + " doorlock is " + strResult);
     return strResult;
@@ -55,7 +55,7 @@ omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
   catch(e)
   {
     console.log("Error getting doorlock state: " + e);
-    return "OPEN";
+    return "unlocked";
   }
 }
 
@@ -65,13 +65,17 @@ omegaDoorlock.prototype.changeDoorlockState = function(doorlockIndex)
   {
     console.log("Changing the state of the " + config.doorlocks[doorlockIndex].doorlockName + " doorlock.");
 
-    this.setservoState(doorlockIndex, 1);
-    exec('fast-gpio pwm ' + config.doorlocks[doorlockIndex].servoPin + ' 50 10');
+    exec('fast-gpio pwm ' + config.doorlocks[doorlockIndex].servoPin + ' 50 ' + config.doorlocks[doorlockIndex].dutyCycleClose);
 
-    setTimeout(function()
-    {
-      exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
+    setTimeout(function(){
+      console.log("Setting servo back to open position");
+      exec('fast-gpio pwm ' + config.doorlocks[doorlockIndex].servoPin + ' 50 ' + config.doorlocks[doorlockIndex].dutyCycleOpen);
     }, 1000);
+
+    setTimeout(function(){
+      console.log("Stop sending signal to servo");
+      exec('fast-gpio set ' + config.doorlocks[doorlockIndex].servoPin + ' 0');
+    }, 3000)
 
   }
   catch(e)
@@ -127,29 +131,29 @@ function beginStateUpdates()
 
 function updateDoorlockState(doorlockIndex)
 {
-  try
-  {
-    console.log("Updating doorlock door states");
 
-    var result = exec('fast-gpio read ' + config.doorlocks[i].sensorPin);
+  console.log("Updating doorlock door states");
+  exec('fast-gpio read ' + config.doorlocks[doorlockIndex].sensorPin, function(error, stdout, stderr){
+    if (error) {
+      console.log("Error getting doorlock state: " + e);
+    } else {
+      var result = parseInt(stdout.trim().slice(-1), 10);
+      if(result != servosStates[doorlockIndex])//If the state of the doorlock has changed, then notify the user.
+      {
 
-    if(result != servosStates[doorlockIndex])//If the state of the doorlock has changed, then notify the user.
-    {
+        servosStates[doorlockIndex] = result;
 
-      var humanResult = result == 0 ? "opened" : "closed";
-      var doorName = config.doorlocks[doorlockIndex].doorlockName
-
-      if (config.webhook) {
-        //just fire it and forget it
-        https.get(config.webhook + '?value1=' + doorName + '&value2=' + humanResult, null);
+        if (config.webhook) {
+          var humanResult = result == 0 ? "unlocked" : "locked";
+          var doorName = config.doorlocks[doorlockIndex].doorlockName
+          //just fire it and forget it
+          https.get(config.webhook + '?value1=' + doorName + '&value2=' + humanResult, null);
+        }
       }
     }
 
-    servosStates[doorlockIndex] = result;
-  }
-  catch(e)
-  {
-    console.log("Error getting doorlock state: " + e);
-  }
+  });
+
 }
+
 module.exports = new omegaDoorlock();
