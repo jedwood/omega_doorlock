@@ -44,9 +44,9 @@ omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
   {
     var strResult = "";
     if(servosStates[doorlockIndex] == 0)
-      strResult = "locked";
-    else
       strResult = "unlocked";
+    else
+      strResult = "locked";
 
     console.log("The " + config.doorlocks[doorlockIndex].doorlockName + " doorlock is " + strResult);
     return strResult;
