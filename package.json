@@ -1,7 +1,7 @@
 {
   "name": "omega_doorlock",
   "version": "0.1.0",
-  "description": "A wifi garage remote control for a DIY door lock.",
+  "description": "A wifi remote control for a DIY door lock.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"

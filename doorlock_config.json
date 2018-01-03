@@ -1,9 +1,9 @@
 {
   "doorlocks": [
     {
-      "relayPin": 18,
+      "servoPin": 18,
       "doorlockName": "Basement",
-      "sensorPin": 26
+      "sensorPin": 0
     }
   ],
   "webhook": null

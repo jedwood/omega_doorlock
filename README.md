@@ -1,6 +1,6 @@
 # omega_doorlock
 
-This borrows *heavily* from the `omega_garage` project, which is node.js application that can control your garage door(s).
+This was inspired heavily by the `omega_garage` project, which is a node.js application that can control your garage door(s).
 
 This app uses a configuration file to define pins, the name of the door lock that the pin corresponds with, and a sensor pin for the magnetic proximity sensor.
 
@@ -83,7 +83,7 @@ This can be used with solenoids or other electromagnetic systems.
 * I initially tried to use an old ligther-weight router package, but got tired of fiddling and just fell back on old trusty Express. I have included a version in the repo that is working for me. If you have problems, try following the instructions in the guide here: https://community.onion.io/topic/855/nodejs-express-http-server/2.
 
 # HomeBridge Compatibility
-* For now I'm using just using a garage door plugin that is working great for my actual garage doors: https://github.com/washcroft/homebridge-http-garagedoorcontroller with the "generic API" config option, but *make sure you add this fix*: https://github.com/washcroft/homebridge-http-garagedoorcontroller/pull/9/files.
+* For now I'm using just using a garage door plugin that is working great for my actual garage doors: https://github.com/washcroft/homebridge-http-garagedoorcontroller with the "generic API" config option.
 
 Here's what my config looks like:
 

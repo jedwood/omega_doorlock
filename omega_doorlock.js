@@ -1,8 +1,7 @@
 var method = omegaDoorlock.prototype;
-var Gpio = require('/usr/bin/onoff-node/onoff.js').Gpio;
 var https = require('https');
 
-relaysStates = [0,0];
+servosStates = [0,0];
 config = {};
 doorlocksLength = 0;
 pinsOut = [];
@@ -22,11 +21,14 @@ omegaDoorlock.prototype.init = function()
 
     for(var i = 0; i < doorlocksLength; i++)
     {
-      console.log("Creating relay for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].relayPin);
-      pinsOut[i] = new Gpio(config.doorlocks[i].relayPin,'out');
+      console.log("Creating servo for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].servoPin);
+      exec('fast-gpio set-output ' + config.doorlocks[i].servoPin);
+      exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
+
+      // exec('fast-gpio pwm 18 50 ' + pulse);
 
       console.log("Creating sensor input for " + config.doorlocks[i].doorlockName + " doorlock on pin: " + config.doorlocks[i].sensorPin);
-      pinsIn[i] = new Gpio(config.doorlocks[i].sensorPin,'in');
+      exec('fast-gpio set-input ' + config.doorlocks[i].sensorPin);
     }
 
     setInterval(beginStateUpdates, 5000);
@@ -42,7 +44,7 @@ omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
   try
   {
     var strResult = "";
-    if(relaysStates[doorlockIndex] == 0)
+    if(servosStates[doorlockIndex] == 0)
       strResult = "OPEN";
     else
       strResult = "CLOSED";
@@ -63,12 +65,12 @@ omegaDoorlock.prototype.changeDoorlockState = function(doorlockIndex)
   {
     console.log("Changing the state of the " + config.doorlocks[doorlockIndex].doorlockName + " doorlock.");
 
-    this.setRelayState(doorlockIndex, 1);
+    this.setservoState(doorlockIndex, 1);
+    exec('fast-gpio pwm ' + config.doorlocks[doorlockIndex].servoPin + ' 50 10');
 
-    var obj = this;
     setTimeout(function()
     {
-      obj.setRelayState(doorlockIndex, 0);
+      exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
     }, 1000);
 
   }
@@ -78,18 +80,12 @@ omegaDoorlock.prototype.changeDoorlockState = function(doorlockIndex)
   }
 };
 
-omegaDoorlock.prototype.setRelayState = function(doorlockIndex, value)
-{
-
-  pinsOut[doorlockIndex].writeSync(value);
-}
-
 omegaDoorlock.prototype.getAllDoorlockStates = function()
 {
   var obj = [];
 
   for(var i = 0; i < doorlocksLength; i++)
-    obj.push(relaysStates[i]);
+    obj.push(servosStates[i]);
 
   return obj;
 }
@@ -98,11 +94,8 @@ omegaDoorlock.prototype.closePins = function()
 {
   for(var i = 0; i < this.garageDoorsLength; i++)
   {
-    console.log("Closing relay pin: " + config.garageDoors[i].relayPin);
-    pinsOut[i].unexport();
-
-    console.log("Closing sensor pin: " + config.garageDoors[i].sensorPin);
-    pinsIn[i].unexport();
+    console.log("Closing servo pin: " + config.garageDoors[i].servoPin);
+    exec('fast-gpio set ' + config.doorlocks[i].servoPin + ' 0');
   }
 };
 
@@ -138,9 +131,9 @@ function updateDoorlockState(doorlockIndex)
   {
     console.log("Updating doorlock door states");
 
-    var result = pinsIn[doorlockIndex].readSync();
+    var result = exec('fast-gpio read ' + config.doorlocks[i].sensorPin);
 
-    if(result != relaysStates[doorlockIndex])//If the state of the doorlock has changed, then notify the user.
+    if(result != servosStates[doorlockIndex])//If the state of the doorlock has changed, then notify the user.
     {
 
       var humanResult = result == 0 ? "opened" : "closed";
@@ -152,7 +145,7 @@ function updateDoorlockState(doorlockIndex)
       }
     }
 
-    relaysStates[doorlockIndex] = result;
+    servosStates[doorlockIndex] = result;
   }
   catch(e)
   {

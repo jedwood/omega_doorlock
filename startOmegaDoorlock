@@ -7,8 +7,8 @@ STOP=1
 
 start() {
         echo start >> /tmp/output.txt
-	git clone --progress https://github.com/jedwood/omega_garage.git /tmp/omega_garage 2> /root/gitoutput.log
-	node /tmp/omega_garage/omega_garageServer.js
+	git clone --progress https://github.com/jedwood/omega_doorlock.git /tmp/omega_doorlock 2> /root/gitoutput.log
+	node /tmp/omega_doorlock/omega_doorlockServer.js
 }
 
 stop() {
