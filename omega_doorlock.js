@@ -44,9 +44,9 @@ omegaDoorlock.prototype.getDoorlockState = function(doorlockIndex)
   {
     var strResult = "";
     if(servosStates[doorlockIndex] == 0)
-      strResult = "unlocked";
-    else
       strResult = "locked";
+    else
+      strResult = "unlocked";
 
     console.log("The " + config.doorlocks[doorlockIndex].doorlockName + " doorlock is " + strResult);
     return strResult;
@@ -69,12 +69,12 @@ omegaDoorlock.prototype.changeDoorlockState = function(doorlockIndex)
     setTimeout(function(){
       console.log("Setting servo back to open position");
       exec('fast-gpio pwm ' + config.doorlocks[doorlockIndex].servoPin + ' 50 ' + config.doorlocks[doorlockIndex].dutyCycleOpen);
-    }, 1000);
+    }, 500);
 
     setTimeout(function(){
       console.log("Stop sending signal to servo");
       exec('fast-gpio set ' + config.doorlocks[doorlockIndex].servoPin + ' 0');
-    }, 3000)
+    }, 1000)
 
   }
   catch(e)
@@ -143,7 +143,7 @@ function updateDoorlockState(doorlockIndex)
         servosStates[doorlockIndex] = result;
 
         if (config.webhook) {
-          var humanResult = result == 0 ? "unlocked" : "locked";
+          var humanResult = result == 0 ? "locked" : "unlocked";
           var doorName = config.doorlocks[doorlockIndex].doorlockName
           //just fire it and forget it
           https.get(config.webhook + '?value1=' + doorName + '&value2=' + humanResult, null);
