@@ -3,6 +3,7 @@
     {
       "servoPin": 18,
       "sensorPin": 0,
+      "dutyCycleOpen": 7,
       "dutyCycleClose": 10,
       "doorlockName": "Basement"
     }
